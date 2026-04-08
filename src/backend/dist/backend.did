@@ -1,0 +1,185 @@
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type UserRole = 
+ variant {
+   admin;
+   business;
+   farmer;
+ };
+type UserProfile = 
+ record {
+   createdAt: Timestamp;
+   email: text;
+   id: UserId;
+   isBlocked: bool;
+   location: text;
+   mobile: text;
+   name: text;
+   role: UserRole;
+ };
+type UserId = principal;
+type Timestamp = int;
+type OrderStatus = 
+ variant {
+   accepted;
+   completed;
+   pending;
+   rejected;
+ };
+type OrderId = nat;
+type Order = 
+ record {
+   buyerId: UserId;
+   createdAt: Timestamp;
+   cropId: CropId;
+   farmerId: UserId;
+   id: OrderId;
+   quantity: float64;
+   status: OrderStatus;
+   totalPrice: float64;
+   updatedAt: Timestamp;
+ };
+type MessageId = nat;
+type FarmerDashboardStats = 
+ record {
+   acceptedOrders: nat;
+   approvedCrops: nat;
+   pendingCrops: nat;
+   pendingOrders: nat;
+   totalCrops: nat;
+   totalOrders: nat;
+   totalRevenue: float64;
+ };
+type ExternalBlob = blob;
+type CropStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type CropInput = 
+ record {
+   cropName: text;
+   description: text;
+   image: opt ExternalBlob;
+   location: text;
+   pricePerUnit: float64;
+   quantity: float64;
+   unit: text;
+ };
+type CropId = nat;
+type Crop = 
+ record {
+   createdAt: Timestamp;
+   cropName: text;
+   description: text;
+   farmerId: UserId;
+   id: CropId;
+   image: opt ExternalBlob;
+   location: text;
+   pricePerUnit: float64;
+   quantity: float64;
+   status: CropStatus;
+   unit: text;
+   updatedAt: Timestamp;
+ };
+type ConversationSummary = 
+ record {
+   lastMessage: text;
+   lastTimestamp: Timestamp;
+   partnerId: UserId;
+   partnerName: text;
+   unreadCount: nat;
+ };
+type ChatMessage = 
+ record {
+   id: MessageId;
+   isRead: bool;
+   message: text;
+   receiverId: UserId;
+   senderId: UserId;
+   timestamp: Timestamp;
+ };
+type BusinessDashboardStats = 
+ record {
+   completedOrders: nat;
+   pendingOrders: nat;
+   totalOrdersPlaced: nat;
+   totalSpent: float64;
+ };
+type AdminReport = 
+ record {
+   newUsersThisMonth: nat;
+   recentOrders: vec Order;
+   topCrops:
+    vec record {
+          cropName: text;
+          totalOrders: nat;
+          totalRevenue: float64;
+        };
+ };
+type AdminDashboardStats = 
+ record {
+   approvedCrops: nat;
+   blockedUsers: nat;
+   completedOrders: nat;
+   pendingCrops: nat;
+   totalBusinessUsers: nat;
+   totalCrops: nat;
+   totalFarmers: nat;
+   totalOrders: nat;
+   totalRevenue: float64;
+   totalUsers: nat;
+ };
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  addCrop: (input: CropInput) -> (Crop);
+  approveCrop: (cropId: CropId) -> (bool);
+  blockUser: (targetId: UserId) -> (bool);
+  deleteCrop: (cropId: CropId) -> (bool);
+  getAdminDashboardStats: () -> (AdminDashboardStats) query;
+  getAdminReports: () -> (AdminReport) query;
+  getAllOrders: () -> (vec Order) query;
+  getBusinessDashboardStats: () -> (BusinessDashboardStats) query;
+  getConversation: (partnerId: UserId) -> (vec ChatMessage) query;
+  getCropById: (cropId: CropId) -> (opt Crop) query;
+  getCrops: (statusFilter: opt CropStatus, farmerFilter: opt UserId) ->
+   (vec Crop) query;
+  getFarmerDashboardStats: () -> (FarmerDashboardStats) query;
+  getMyConversations: () -> (vec ConversationSummary) query;
+  getMyCrops: () -> (vec Crop) query;
+  getMyOrdersAsBuyer: () -> (vec Order) query;
+  getMyOrdersAsFarmer: () -> (vec Order) query;
+  getMyProfile: () -> (opt UserProfile) query;
+  getOrderById: (orderId: OrderId) -> (opt Order) query;
+  getUsers: () -> (vec UserProfile) query;
+  markMessagesRead: (senderId: UserId) -> ();
+  placeOrder: (cropId: CropId, quantity: float64) -> (Order);
+  registerUser: (name: text, email: text, mobile: text, role: UserRole,
+   location: text) -> (bool);
+  rejectCrop: (cropId: CropId) -> (bool);
+  sendMessage: (receiverId: UserId, message: text) -> (ChatMessage);
+  unblockUser: (targetId: UserId) -> (bool);
+  updateCrop: (cropId: CropId, input: CropInput) -> (bool);
+  updateMyProfile: (name: text, mobile: text, location: text) -> (bool);
+  updateOrderStatus: (orderId: OrderId, newStatus: OrderStatus) -> (bool);
+}

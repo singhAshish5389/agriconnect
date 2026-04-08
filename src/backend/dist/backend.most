@@ -1,0 +1,98 @@
+// Version: 1.0.0
+type ChatMessage__320276150 =
+  {
+    id : MessageId__807658731;
+    isRead : Bool;
+    message : Text;
+    receiverId : UserId__166399690;
+    senderId : UserId__166399690;
+    timestamp : Timestamp__534280185
+  };
+type CropId__413369060 = Nat;
+type CropId__704643757 = CropId__413369060;
+type CropStatus__91375010 = {#approved; #pending; #rejected};
+type Crop__995875921 =
+  {
+    createdAt : Timestamp__534280185;
+    cropName : Text;
+    description : Text;
+    farmerId : UserId__166399690;
+    id : CropId__704643757;
+    image : ?ExternalBlob__246066408;
+    location : Text;
+    pricePerUnit : Float;
+    quantity : Float;
+    status : CropStatus__91375010;
+    unit : Text;
+    updatedAt : Timestamp__534280185
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type ExternalBlob__246066408 = Blob;
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type MessageId__291319400 = Nat;
+type MessageId__807658731 = MessageId__291319400;
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type OrderId__197865225 = Nat;
+type OrderId__301709815 = OrderId__197865225;
+type OrderStatus__352169100 = {#accepted; #completed; #pending; #rejected};
+type Order__308187248 =
+  {
+    buyerId : UserId__166399690;
+    createdAt : Timestamp__534280185;
+    cropId : CropId__704643757;
+    farmerId : UserId__166399690;
+    id : OrderId__301709815;
+    quantity : Float;
+    status : OrderStatus__352169100;
+    totalPrice : Float;
+    updatedAt : Timestamp__534280185
+  };
+type Timestamp__301639476 = Int;
+type Timestamp__534280185 = Timestamp__301639476;
+type UserId__158757552 = Principal;
+type UserId__166399690 = UserId__158757552;
+type UserProfile__93964565 =
+  {
+    createdAt : Timestamp__534280185;
+    email : Text;
+    id : UserId__166399690;
+    isBlocked : Bool;
+    location : Text;
+    mobile : Text;
+    name : Text;
+    role : UserRole__871892341
+  };
+type UserRole__871892341 = {#admin; #business; #farmer};
+actor {
+  stable counters :
+    {var nextCropId : Nat; var nextMessageId : Nat; var nextOrderId : Nat};
+  stable crops :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Crop__995875921]];
+      var elementIndex : Nat__490723111
+    };
+  stable messages :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ChatMessage__320276150]];
+      var elementIndex : Nat__490723111
+    };
+  stable orders :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Order__308187248]];
+      var elementIndex : Nat__490723111
+    };
+  stable profiles :
+    {
+      var root : Node__46230540<UserId__158757552, UserProfile__93964565>;
+      var size : Nat__490723111
+    }
+};

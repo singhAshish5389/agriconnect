@@ -1,0 +1,23 @@
+{
+  "overview": "AgriConnect is a full-stack agricultural marketplace on the Internet Computer connecting Farmers, Business buyers, and Admins. Farmers list crops with images and manage orders, Businesses browse and purchase produce, and Admins oversee the entire platform with approval workflows and reports.",
+  "features": [
+    "Role-based marketplace with Farmer, Business, and Admin panels",
+    "Crop listings with image upload, pricing, and location",
+    "Order management with accept/reject workflow",
+    "Polling-based chat between farmers and buyers",
+    "Admin crop approval, user management, and reports dashboard",
+    "Responsive mobile-first design with green/white theme and smooth animations",
+    "Internet Identity authentication with role-based access control"
+  ],
+  "category": "marketplace",
+  "tags": [
+    "agriculture",
+    "marketplace",
+    "farmers",
+    "orders",
+    "chat",
+    "admin",
+    "crops"
+  ],
+  "last_updated": "2026-04-08T19:03:49.430Z"
+}
